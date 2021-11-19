@@ -18,15 +18,14 @@ export const findOneUser = async (email) => {
     return user;
 };
 
+
 export const verifyPassword = async (password, hashedPassword) => {
     const isValid = await compare(password, hashedPassword);
     return isValid;
 };
 
 export const getAllLocations = async () => {
-
     const res = await Location.find().lean();
-
     var locations = res.map((location) => ({
         id: location._id.toString(),
         name: location.name,

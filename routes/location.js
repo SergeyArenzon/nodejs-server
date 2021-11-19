@@ -3,6 +3,7 @@ import Location from "../models/Location.js";
 import { getAllLocations, findOneUser } from "../services/db.js";
 import { locationSchema } from "../validations/location.js";
 
+//  /location //
 
 
 const router = express.Router();
@@ -64,6 +65,21 @@ router.post('/', async(req, res) => {
     }
     await locationModel.save();
 });
+
+
+
+router.get("/:id", async(req, res) => {
+   const { id } = req.params;
+    try {
+      const location = await getLocationById(id);
+      res.status(200).json({
+        message: "Successfully location by id fatched",
+        location: location,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error });
+    }
+})
 
 
 export default router;
