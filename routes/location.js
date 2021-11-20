@@ -3,9 +3,10 @@ import {getLocations, createLocation, getLocation, deleteLocation, editLocation,
 
 const router = express.Router();
 
-/*
-    ROUTE:  /location
+/* 
+ROUTE:  /location  
 */
+
 router.get('/', getLocations);
 router.post('/', createLocation);
 router.get("/:id", getLocation);
