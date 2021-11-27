@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import locationRoutes from './routes/location.js';
 
 
+
 const app = express();
 
 app.use("/location", locationRoutes)
@@ -16,14 +17,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 dotenv.config();
 app.use(cors());
 
-
-// allow cors in local
-let allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Headers', "*");
-    next();
-  }
-app.use(allowCrossDomain);
 
 const PORT = process.env.PORT || 5000;
 const MONGODB_URL = process.env.MONGODB_URL;
