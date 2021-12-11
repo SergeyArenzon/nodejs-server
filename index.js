@@ -8,8 +8,7 @@ import locationRoutes from './routes/location.js';
 
 
 const app = express();
-
-app.use("/location", locationRoutes)
+app.use(express.json());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 dotenv.config();
 app.use(cors());
 
+app.use("/location", locationRoutes)
 
 const PORT = process.env.PORT || 5000;
 const MONGODB_URL = process.env.MONGODB_URL;

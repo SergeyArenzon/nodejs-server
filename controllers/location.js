@@ -9,6 +9,7 @@ import {
 } from "../services/db.js";
 import { locationSchema } from "../validations/location.js";
 
+
 export const getLocations = async (req, res) => {
   try {
     const locations = await getAllLocations();
@@ -103,12 +104,9 @@ export const editLocation = async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
 
+  console.log(updatedData);
   // Check for correct user trying to edit
   const location = await getLocationById(id);
-  if (location.email !== session.user.email) {
-    res.status(401).json({ message: "Wrong user editing location" });
-    return;
-  }
   try {
     const response = await updateLocationById(id, updatedData);
 
