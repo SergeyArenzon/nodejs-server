@@ -249,12 +249,17 @@ export const postLogin = async (req, res, next ) => {
   })(req, res, next);
 };
 
-export const getLogout =(req, res ) => {
+export const getLogout = (req, res ) => {
   
- 
+ try{
+
   const user = req.user;
   req.logout();
   res.json({message: "successfully logout" ,user})
+ }catch(err){
+  res.json({err: err})
+ }
+  
 };
 
 
@@ -264,13 +269,5 @@ export const getUser =(req, res ) => {
   // const user = req.user;
   res.json({message: "User logged in" })
 };
-export const getTest =(req, res ) => {
-  
- 
-  // const user = req.user;
-  res.json({message: "testttt" })
-};
-
-
 
 

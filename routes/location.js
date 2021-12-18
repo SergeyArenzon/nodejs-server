@@ -14,7 +14,6 @@ import {
   postLogin,
   getLogout,
   getUser,
-  getTest
   
 } from "../controllers/location.js";
 
@@ -34,8 +33,7 @@ router.post("/:id/comment", createComment);
 router.get("/:id/comment", getComment);
 router.post("/register", postRegister);
 router.post("/login", postLogin);
-router.get("/logout", getLogout);
-router.get("/user", getUser);
-router.get("/test", getTest);
+
+
 
 export default router;
