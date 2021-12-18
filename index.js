@@ -11,7 +11,6 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -40,21 +39,8 @@ passportInitialize(passport);
 app.use("/location", locationRoutes);
 
 app.get("/user", (req, res) => {
+  // console.log(req.user);
   res.json({ user: req.user });
-});
-app.post("/location/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) throw err;
-    if (!user) res.status(401).json({ message: "No user exist" });
-    else {
-      req.logIn(user, (err) => {
-        if (err) throw err;
-        res
-          .status(200)
-          .json({ message: "Successfully Authenticated", user: user });
-      });
-    }
-  })(req, res, next);
 });
 
 const PORT = process.env.PORT || 5000;

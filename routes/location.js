@@ -11,7 +11,10 @@ import {
   createComment,
   getComment,
   postRegister,
-  postLogin
+  postLogin,
+  getLogout,
+  getUser,
+  getTest
   
 } from "../controllers/location.js";
 
@@ -30,6 +33,9 @@ router.put("/:id/rating", updateRating);
 router.post("/:id/comment", createComment);
 router.get("/:id/comment", getComment);
 router.post("/register", postRegister);
-// router.post("/login", postLogin);
+router.post("/login", postLogin);
+router.get("/logout", getLogout);
+router.get("/user", getUser);
+router.get("/test", getTest);
 
 export default router;

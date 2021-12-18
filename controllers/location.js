@@ -234,16 +234,43 @@ export const postRegister = async (req, res) => {
   }
 };
 
-export const postLogin = async (req, res, next) => {
-  
+export const postLogin = async (req, res, next ) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
     if (!user) res.status(401).json({ message: "No user exist" });
     else {
       req.logIn(user, (err) => {
         if (err) throw err;
-        res.status(200).json({ message: "Successfully Authenticated", user: user });
+        res
+          .status(200)
+          .json({ message: "Successfully Authenticated", user: user });
       });
     }
-  })(req, res, next)
+  })(req, res, next);
 };
+
+export const getLogout =(req, res ) => {
+  
+ 
+  const user = req.user;
+  req.logout();
+  res.json({message: "successfully logout" ,user})
+};
+
+
+export const getUser =(req, res ) => {
+  
+ 
+  // const user = req.user;
+  res.json({message: "User logged in" })
+};
+export const getTest =(req, res ) => {
+  
+ 
+  // const user = req.user;
+  res.json({message: "testttt" })
+};
+
+
+
+
