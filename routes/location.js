@@ -1,4 +1,6 @@
 import express from "express";
+
+
 import {
   getLocations,
   createLocation,
@@ -24,5 +26,6 @@ router.put("/:id/edit", editLocation);
 router.put("/:id/rating", updateRating);
 router.post("/:id/comment", createComment);
 router.get("/:id/comment", getComment);
+
 
 export default router;

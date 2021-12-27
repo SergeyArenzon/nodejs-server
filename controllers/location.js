@@ -1,4 +1,5 @@
 import Location from "../models/Location.js";
+import User from "../models/User.js";
 import {
   getAllLocations,
   findOneUser,
@@ -8,9 +9,11 @@ import {
   getCommentsByLocationId,
 } from "../services/db.js";
 import { locationSchema } from "../validations/location.js";
-
+import bcrypt from "bcrypt";
+import passport from "passport";
 
 export const getLocations = async (req, res) => {
+  console.log(req.user);
   try {
     const locations = await getAllLocations();
     res.status(200).json({ locations: locations });
@@ -23,7 +26,8 @@ export const getLocations = async (req, res) => {
 };
 
 export const createLocation = async (req, res) => {
-  const { name, price, location, description, email, images, coordinate } =
+
+  const { name, price, location, description, images, coordinate } =
     req.body;
 
   // check for input validity
@@ -38,11 +42,12 @@ export const createLocation = async (req, res) => {
     res.status(400).json({ message: "Error! Wrong input!" });
   }
 
-  const author = await findOneUser(session.user.email);
+  
+  const author = await findOneUser(req.user.email);
   const locationModel = new Location({
     author: author._id,
-    email,
     name,
+    email: req.user.email,
     price,
     location,
     description,
@@ -206,3 +211,7 @@ export const getComment = async (req, res) => {
     });
   }
 };
+
+
+
+
