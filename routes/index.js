@@ -1,12 +1,9 @@
 import express from "express";
-
 import { getLogout, postRegister, postLogin, getUser } from "../controllers/index.js";
 
 const router = express.Router();
 
-/* 
-ROUTE:  /  
-*/
+/* ROUTE:/  */
 
 router.get("/logout", getLogout);
 router.post("/register", postRegister);

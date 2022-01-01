@@ -1,5 +1,5 @@
 import express from "express";
-
+import { checkAuthenticated } from "../middlewares/auth.js";
 
 import {
   getLocations,
@@ -14,18 +14,15 @@ import {
 
 const router = express.Router();
 
-/* 
-ROUTE:  /location  
-*/
+/* ROUTE:  /location  */
 
 router.get("/", getLocations);
-router.post("/", createLocation);
+router.post("/", checkAuthenticated, createLocation);
 router.get("/:id", getLocation);
 router.delete("/:id", deleteLocation);
 router.put("/:id/edit", editLocation);
 router.put("/:id/rating", updateRating);
 router.post("/:id/comment", createComment);
 router.get("/:id/comment", getComment);
-
 
 export default router;

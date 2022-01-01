@@ -58,6 +58,6 @@ export const getUser = async (req, res) => {
     user.password = undefined;
     res.status(200).json({ user });
   } catch (err) {
-    res.status(200).json({ err });
+    res.status(401).json({ error: err, message: "Unauthorized user"  });
   }
 };
