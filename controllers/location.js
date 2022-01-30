@@ -125,12 +125,16 @@ export const editLocation = async (req, res) => {
 };
 
 export const updateRating = async (req, res) => {
-  const userEmail = session.user.email;
+
+  const userEmail = req.user.email;
   const rating = req.body.rating;
   const locationId = req.params.id;
   const location = await getLocationById(locationId);
-
+  
   const user = await findOneUser(userEmail);
+  console.log("=============");
+  console.log(user);
+  console.log("=============");
 
   let userAlreadtRated = false;
   try {
@@ -142,6 +146,7 @@ export const updateRating = async (req, res) => {
     });
 
     if (!userAlreadtRated) {
+      console.log("already rated");
       location.ratings.push({ user, rating });
     }
     await updateLocationById(locationId, location);
@@ -155,6 +160,7 @@ export const updateRating = async (req, res) => {
       message: "Failed adding rating",
       rating,
       location,
+      error
     });
   }
 };
