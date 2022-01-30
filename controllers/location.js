@@ -132,9 +132,6 @@ export const updateRating = async (req, res) => {
   const location = await getLocationById(locationId);
   
   const user = await findOneUser(userEmail);
-  console.log("=============");
-  console.log(user);
-  console.log("=============");
 
   let userAlreadtRated = false;
   try {
@@ -146,7 +143,6 @@ export const updateRating = async (req, res) => {
     });
 
     if (!userAlreadtRated) {
-      console.log("already rated");
       location.ratings.push({ user, rating });
     }
     await updateLocationById(locationId, location);
