@@ -1,5 +1,4 @@
-import Location from "../models/Location.js";
-import User from "../models/User.js";
+import Location from "../models/Location";
 import {
   getAllLocations,
   findOneUser,
@@ -7,12 +6,20 @@ import {
   deleteLocationById,
   updateLocationById,
   getCommentsByLocationId,
-} from "../services/db.js";
-import { locationSchema } from "../validations/location.js";
+} from "../services/db";
+import { locationSchema } from "../validations/location";
 import bcrypt from "bcrypt";
 import passport from "passport";
+import { Request, Response } from "express";
 
-export const getLocations = async (req, res) => {
+
+interface IComment {
+  author: string,
+    title: string,
+    body: string,
+}
+
+export const getLocations = async (req: Request, res: Response) => {
   console.log(req.user);
   try {
     const locations = await getAllLocations();
@@ -25,10 +32,12 @@ export const getLocations = async (req, res) => {
   }
 };
 
-export const createLocation = async (req, res) => {
+export const createLocation = async (req: Request, res: Response) => {
 
   const { name, price, location, description, images, coordinate } =
     req.body;
+  const { user } = req;
+ 
 
   // check for input validity
   const isValid = await locationSchema.isValid({
@@ -41,13 +50,14 @@ export const createLocation = async (req, res) => {
   if (!isValid) {
     res.status(400).json({ message: "Error! Wrong input!" });
   }
-
-  
-  const author = await findOneUser(req.user.email);
+ //@ts-ignore
+  const author = await findOneUser(user.email );
+ 
   const locationModel = new Location({
     author: author._id,
     name,
-    email: req.user.email,
+     //@ts-ignore
+    email: user.email, 
     price,
     location,
     description,
@@ -70,7 +80,7 @@ export const createLocation = async (req, res) => {
   await locationModel.save();
 };
 
-export const getLocation = async (req, res) => {
+export const getLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const location = await getLocationById(id);
@@ -83,14 +93,12 @@ export const getLocation = async (req, res) => {
   }
 };
 
-export const deleteLocation = async (req, res) => {
+export const deleteLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const session = await getSession({ req });
-  console.log(session.user.email);
+  const { user } = req;
   const location = await getLocationById(id);
-  console.log(session.user.email, location.email);
-
-  if (session.user.email !== location.email) {
+   //@ts-ignore
+  if (user.email !== location.email) {
     res.status(401).json({ message: "Wrong user trying to delete location" });
     return;
   }
@@ -105,7 +113,7 @@ export const deleteLocation = async (req, res) => {
   }
 };
 
-export const editLocation = async (req, res) => {
+export const editLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const updatedData = req.body;
 
@@ -124,10 +132,10 @@ export const editLocation = async (req, res) => {
   }
 };
 
-export const updateRating = async (req, res) => {
-
+export const updateRating = async (req: Request, res: Response) => {
+ //@ts-ignore
   const userEmail = req.user.email;
-  const rating = req.body.rating;
+  const rating: [] = req.body.rating;
   const locationId = req.params.id;
   const location = await getLocationById(locationId);
   
@@ -135,7 +143,8 @@ export const updateRating = async (req, res) => {
 
   let userAlreadtRated = false;
   try {
-    location.ratings.forEach((existRating, index) => {
+
+    location.ratings.forEach((existRating: any, index: number) => {
       if (existRating.user._id.equals(user._id)) {
         location.ratings[index].rating = rating;
         userAlreadtRated = true;
@@ -161,22 +170,27 @@ export const updateRating = async (req, res) => {
   }
 };
 
-export const createComment = async (req, res) => {
+export const createComment = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, body } = req.body;
   const locationId = id;
-  const creatorEmail = session.user.email;
+   //@ts-ignore
+  const creatorEmail = req.user.email;
   const author = await findOneUser(creatorEmail);
   const location = await getLocationById(locationId);
 
   // console.log(location);
+  //@ts-ignore
   const comment = new Comment({
     author: author._id,
     title,
     body,
   });
 
+  
+
   try {
+   //@ts-ignore
     const response = await comment.save();
 
     location.comments.push(comment);
@@ -198,7 +212,7 @@ export const createComment = async (req, res) => {
   }
 };
 
-export const getComment = async (req, res) => {
+export const getComment = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const comments = await getCommentsByLocationId(id);

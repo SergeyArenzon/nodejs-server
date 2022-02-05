@@ -1,11 +1,11 @@
-import User from "../models/User.js";
-import Location from "../models/Location.js";
-import Comment from "../models/Comment.js";
+import User from "../models/User";
+import Location from "../models/Location";
+import Comment from "../models/Comment";
 import { compare } from "bcrypt";
 
 
 //  check for user existance
-export const checkUserExist = async (email) => {
+export const checkUserExist = async (email: string) => {
     const user = await User.findOne({ email: email }).exec();
     if (user) {
         return true;
@@ -13,13 +13,13 @@ export const checkUserExist = async (email) => {
     return false;
 };
 
-export const findOneUser = async (email) => {
+export const findOneUser = async (email: string) => {
     const user = await User.findOne({ email: email }).exec();
     return user;
 };
 
 
-export const verifyPassword = async (password, hashedPassword) => {
+export const verifyPassword = async (password: string, hashedPassword: string) => {
     const isValid = await compare(password, hashedPassword);
     return isValid;
 };
@@ -36,23 +36,23 @@ export const getAllLocations = async () => {
     return locations;
 };
 
-export const getLocationById = async (id) => {
+export const getLocationById = async (id: string) => {
     const location = await Location.findOne({ _id: id }).exec();
     return location;
 };
-
-export const updateLocationById = async (id, updatedLocation) => {
+// @ts-ignore
+export const updateLocationById = async (id: string, updatedLocation) => {
     const response = Location.findByIdAndUpdate(id, updatedLocation);
     return response;
 };
 
 
-export const deleteLocationById = async (id) => {
+export const deleteLocationById = async (id: string) => {
     const response = await Location.deleteOne({ _id: id });
     return response;
 };
 
-export const getCommentsByLocationId = async(id) => { 
+export const getCommentsByLocationId = async(id: string) => { 
        
     // const commentsObj = await Location.findOne({ _id: id }).populate("comments").exec();
     // return commentsObj;

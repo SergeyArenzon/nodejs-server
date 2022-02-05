@@ -1,8 +1,22 @@
 import bcrypt from "bcrypt";
-import User from "../models/User.js";
+import User from "../models/User";
 import passport from "passport";
+import { NextFunction, Request, Response } from "express";
 
-export const getLogout = (req, res) => {
+
+interface IUser  {
+  date: string,
+  email: string,
+  firstName: string,
+  lastName: string,
+  password: string | undefined
+}
+
+interface RequestWithUser extends Request {
+  user: IUser;
+}
+
+export const getLogout = (req: Request, res: Response) => {
   try {
     const user = req.user;
     req.logout();
@@ -12,7 +26,7 @@ export const getLogout = (req, res) => {
   }
 };
 
-export const postRegister = async (req, res) => {
+export const postRegister = async (req: Request, res: Response) => {
   const { email, password, firstName, lastName } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,7 +51,7 @@ export const postRegister = async (req, res) => {
   }
 };
 
-export const postLogin = async (req, res, next) => {
+export const postLogin = async (req: Request, res: Response, next:NextFunction) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
     if (!user) res.status(401).json({ message: "No user exist" });
@@ -52,10 +66,10 @@ export const postLogin = async (req, res, next) => {
   })(req, res, next);
 };
 
-export const getUser = async (req, res) => {
-  const user = req.user;
+export const getUser = async (req: Request, res: Response): Promise<void> => {
+  const { user } = req;
   try {
-    user.password = undefined;
+    // user?.password = undefined;
     res.status(200).json({ user });
   } catch (err) {
     res.status(401).json({ error: err, message: "Unauthorized user"  });

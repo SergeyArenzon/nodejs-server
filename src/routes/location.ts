@@ -1,5 +1,5 @@
 import express from "express";
-import { checkAuthenticated } from "../middlewares/auth.js";
+import { checkAuthenticated } from "../middlewares/auth";
 
 import {
   getLocations,
@@ -10,7 +10,7 @@ import {
   updateRating,
   createComment,
   getComment,
-} from "../controllers/location.js";
+} from "../controllers/location";
 
 const router = express.Router();
 
