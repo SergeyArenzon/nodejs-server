@@ -3,18 +3,26 @@ import User from "../models/User";
 import passport from "passport";
 import { NextFunction, Request, Response } from "express";
 
-
-interface IUser  {
-  date: string,
-  email: string,
-  firstName: string,
-  lastName: string,
-  password: string | undefined
+declare global {
+  namespace Express {
+    interface User {
+      date: string,
+      email: string,
+      firstName: string,
+      lastName: string,
+      password: string | undefined
+    }
+  }
 }
 
 interface RequestWithUser extends Request {
-  user: IUser;
+  user?: {date: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    password: string | undefined}
 }
+
 
 export const getLogout = (req: Request, res: Response) => {
   try {
@@ -66,10 +74,12 @@ export const postLogin = async (req: Request, res: Response, next:NextFunction) 
   })(req, res, next);
 };
 
-export const getUser = async (req: Request, res: Response): Promise<void> => {
-  const { user } = req;
+export const getUser = async (req: Request, res: Response) => {
+  const { user }  = req;
   try {
-    // user?.password = undefined;
+    if(user){
+      user.password = undefined;
+    }
     res.status(200).json({ user });
   } catch (err) {
     res.status(401).json({ error: err, message: "Unauthorized user"  });

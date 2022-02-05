@@ -3,6 +3,25 @@ import Location from "../models/Location";
 import Comment from "../models/Comment";
 import { compare } from "bcrypt";
 
+interface ILocation {
+    email: string,
+    // string: { type: Schema.Types.ObjectId, ref: "user" },
+    name: String,
+    location: string,
+    price: number,
+    description: string,
+    // comments: [{ type: Schema.Types.ObjectId, ref: "comment" }],
+    coordinate: [number, number],
+    // date: { type: Date, default: Date.now },
+    images: [],
+    // ratings: [
+    //     {
+    //     user: { type: Schema.Types.ObjectId, ref: "user" },
+    //     rating: Number,
+    //     },
+    // ],
+}
+
 
 //  check for user existance
 export const checkUserExist = async (email: string) => {
@@ -40,8 +59,8 @@ export const getLocationById = async (id: string) => {
     const location = await Location.findOne({ _id: id }).exec();
     return location;
 };
-// @ts-ignore
-export const updateLocationById = async (id: string, updatedLocation) => {
+
+export const updateLocationById = async (id: string, updatedLocation: ILocation) => {
     const response = Location.findByIdAndUpdate(id, updatedLocation);
     return response;
 };
