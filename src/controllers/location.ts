@@ -2,6 +2,7 @@ import Location from "../models/Location";
 import {
   getAllLocations,
   findOneUser,
+  findUserById,
   getLocationById,
   deleteLocationById,
   updateLocationById,
@@ -19,8 +20,9 @@ interface IComment {
     body: string,
 }
 
+
+
 export const getLocations = async (req: Request, res: Response) => {
-  console.log(req.user);
   try {
     const locations = await getAllLocations();
     res.status(200).json({ locations: locations });
@@ -100,11 +102,17 @@ export const deleteLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { user } = req;
   const location = await getLocationById(id);
-   //@ts-ignore
-  if (user.email !== location.email) {
+
+  if(!user) {
+    res.status(401).json({ message: "Unauthorized user" });
+    return;
+  }  
+
+  if (user.id !== location.author._id.toString()) {
     res.status(401).json({ message: "Wrong user trying to delete location" });
     return;
   }
+
   try {
     const respone = await deleteLocationById(id);
     res.status(200).json({

@@ -36,6 +36,10 @@ export const findOneUser = async (email: string) => {
     const user = await User.findOne({ email: email }).exec();
     return user;
 };
+export const findUserById = async (id: string) => {
+    const user = await User.findById(id).exec();
+    return user;
+};
 
 
 export const verifyPassword = async (password: string, hashedPassword: string) => {
