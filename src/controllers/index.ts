@@ -6,21 +6,12 @@ import { NextFunction, Request, Response } from "express";
 declare global {
   namespace Express {
     interface User {
-      date: string,
+      id: string,
       email: string,
       firstName: string,
       lastName: string,
-      password: string | undefined
     }
   }
-}
-
-interface RequestWithUser extends Request {
-  user?: {date: string,
-    email: string,
-    firstName: string,
-    lastName: string,
-    password: string | undefined}
 }
 
 
@@ -77,9 +68,6 @@ export const postLogin = async (req: Request, res: Response, next:NextFunction) 
 export const getUser = async (req: Request, res: Response) => {
   const { user }  = req;
   try {
-    if(user){
-      user.password = undefined;
-    }
     res.status(200).json(user);
   } catch (err) {
     res.status(401).json({ error: err, message: "Unauthorized user"  });
