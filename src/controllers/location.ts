@@ -34,10 +34,13 @@ export const getLocations = async (req: Request, res: Response) => {
 
 export const createLocation = async (req: Request, res: Response) => {
 
-  const { name, price, location, description, images, coordinate } =
-    req.body;
+  const { name, price, location, description, images, coordinate } = req.body;
   const { user } = req;
  
+  if(!user){
+    res.status(401).json({ message: "Unauthorized user" });
+    return
+  }
 
   // check for input validity
   const isValid = await locationSchema.isValid({

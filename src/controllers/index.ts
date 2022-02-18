@@ -80,7 +80,7 @@ export const getUser = async (req: Request, res: Response) => {
     if(user){
       user.password = undefined;
     }
-    res.status(200).json({ user });
+    res.status(200).json(user);
   } catch (err) {
     res.status(401).json({ error: err, message: "Unauthorized user"  });
   }
