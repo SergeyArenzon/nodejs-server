@@ -1,4 +1,5 @@
 import Location from "../models/Location";
+import Comment from "../models/Comment";
 import {
   getAllLocations,
   findOneUser,
@@ -185,13 +186,19 @@ export const createComment = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, body } = req.body;
   const locationId = id;
-   //@ts-ignore
-  const creatorEmail = req.user.email;
-  const author = await findOneUser(creatorEmail);
+  const {user} = req;
+
+  if(!user){
+    res.status(401).json({ message: "Unauthorized user" });
+    return;
+  }
+  const author = await findUserById(user.id);
+  console.log(author);
+  
+
   const location = await getLocationById(locationId);
 
-  // console.log(location);
-  //@ts-ignore
+   //@ts-ignore
   const comment = new Comment({
     author: author._id,
     title,
@@ -201,14 +208,12 @@ export const createComment = async (req: Request, res: Response) => {
   
 
   try {
-   //@ts-ignore
+//@ts-ignore
     const response = await comment.save();
 
     location.comments.push(comment);
     location.save();
 
-    //  const l = await Location.findOne({name: "test2"}).populate('comments').exec()
-    //    console.log(l)
 
     res.status(201).json({
       message: "Successfully comment added.",
