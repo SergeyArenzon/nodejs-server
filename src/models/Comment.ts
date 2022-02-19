@@ -1,9 +1,19 @@
 import mongoose from "mongoose";
-// import User from "./User";
+import {Types} from "mongoose";
 
 const { Schema } = mongoose;
 
-const commentSchema = new Schema({
+type ICommentSchema =  {
+  author: Types.ObjectId;
+  title: string;
+  body: string;
+  rating: number;
+  date: {type: DateConstructor, default: DateConstructor};
+
+}
+
+
+const commentSchema = new Schema<ICommentSchema>({
   author: { type: Schema.Types.ObjectId, ref: "user" },
   title: String,
   body: String,
