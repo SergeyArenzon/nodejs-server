@@ -23,6 +23,7 @@ interface IComment {
 
 
 
+
 export const getLocations = async (req: Request, res: Response) => {
   try {
     const locations = await getAllLocations();
@@ -46,23 +47,23 @@ export const createLocation = async (req: Request, res: Response) => {
   }
 
   // check for input validity
-  const isValid = await locationSchema.isValid({
-    name,
-    price,
-    location,
-    description,
-  });
+  // const isValid = await locationSchema.isValid({
+  //   name,
+  //   price,
+  //   location,
+  //   description,
+  // });
 
-  if (!isValid) {
-    res.status(400).json({ message: "Error! Wrong input!" });
-  }
- //@ts-ignore
-  const author = await findOneUser(user.email );
+  // if (!isValid) {
+  //   res.status(400).json({ message: "Error! Wrong input!" });
+  // }
+
+  const author = await findUserById(user.id );
  
+
   const locationModel = new Location({
-    author: author._id,
+    author: author.id,
     name,
-     //@ts-ignore
     email: user.email, 
     price,
     location,
@@ -145,13 +146,18 @@ export const editLocation = async (req: Request, res: Response) => {
 };
 
 export const updateRating = async (req: Request, res: Response) => {
- //@ts-ignore
-  const userEmail = req.user.email;
+  
+  if(!req.user){
+    res.status(401).json({ message: "Unauthorized user" });
+    return;
+  }
+
+  const userId = req.user.id;
   const rating: [] = req.body.rating;
   const locationId = req.params.id;
   const location = await getLocationById(locationId);
   
-  const user = await findOneUser(userEmail);
+  const user = await findUserById(userId);
 
   let userAlreadtRated = false;
   try {
