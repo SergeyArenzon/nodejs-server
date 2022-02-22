@@ -128,14 +128,26 @@ export const deleteLocation = async (req: Request, res: Response) => {
 
 export const editLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const { user } = req;
+
   const updatedData = req.body;
 
-  console.log(updatedData);
+
   // Check for correct user trying to edit
+  if(!user){
+    res.status(401).json({ message: "Unauthorized user" });
+    return; 
+  }
+
   const location = await getLocationById(id);
+  
+  if(user.id !== location.author.toString()){
+    res.status(405).json({ message: "User not allowed for editing this location." });
+    return;
+  }
+
   try {
     const response = await updateLocationById(id, updatedData);
-
     res.status(200).json({
       message: "Successfully location by id updated",
       location: response,
