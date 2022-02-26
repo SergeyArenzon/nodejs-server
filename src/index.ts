@@ -13,6 +13,7 @@ import mongoose, { ConnectOptions } from "mongoose";
 
 
 
+
 const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
@@ -26,11 +27,14 @@ app.use(
     credentials: true,
   })
 );
+
+const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
-    resave: true,
+    resave: false,
     saveUninitialized: true,
+    cookie: { maxAge: oneDay }
   })
 );
 

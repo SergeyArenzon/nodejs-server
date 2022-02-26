@@ -2,7 +2,6 @@ import Location from "../models/Location";
 import Comment from "../models/Comment";
 import {
   getAllLocations,
-  findOneUser,
   findUserById,
   getLocationById,
   deleteLocationById,
@@ -103,12 +102,20 @@ export const getLocation = async (req: Request, res: Response) => {
 export const deleteLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { user } = req;
+  console.log("=============================");
   const location = await getLocationById(id);
+  console.log(location);
+  
+  console.log("======================111=======");
 
+  
   if(!user) {
     res.status(401).json({ message: "Unauthorized user" });
     return;
   }  
+
+  console.log(user.id, location.author._id.toString() );
+  
 
   if (user.id !== location.author._id.toString()) {
     res.status(401).json({ message: "Wrong user trying to delete location" });
