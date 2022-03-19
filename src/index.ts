@@ -9,7 +9,7 @@ import passport from "passport";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import mongoose, { ConnectOptions } from "mongoose";
-
+import { generateUploadURL } from './s3';
 
 
 
@@ -44,9 +44,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 passportInitialize(passport);
 
+app.get('/s3url', async(req, res) => {
+  const url = await generateUploadURL();
+  res.send({url})
+})
+
 app.use("/", indexRoutes);
 app.use("/location", locationRoutes);
-
 const PORT = process.env.PORT || 5000;
 const MONGODB_URL: string | undefined  = process.env.MONGODB_URL;
 
