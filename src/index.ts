@@ -46,7 +46,12 @@ passportInitialize(passport);
 
 app.get('/s3url', async(req, res) => {
   const url = await generateUploadURL();
+  const imageName = url.split('?')[0]
+  console.log(imageName);
+  
   res.send({url})
+  
+
 })
 
 app.use("/", indexRoutes);
