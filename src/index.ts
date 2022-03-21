@@ -1,5 +1,5 @@
 import express from "express";
-import bodyParser from "body-parser";
+import bodyParser, { text } from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import locationRoutes from "./routes/location";
@@ -10,7 +10,7 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import mongoose, { ConnectOptions } from "mongoose";
 import { generateUploadURL } from './s3';
-
+import fetch from "node-fetch";
 
 
 
@@ -28,6 +28,7 @@ app.use(
   })
 );
 
+
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   session({
@@ -44,12 +45,22 @@ app.use(passport.initialize());
 app.use(passport.session());
 passportInitialize(passport);
 
+
 app.get('/s3url', async(req, res) => {
   const url = await generateUploadURL();
   const imageName = url.split('?')[0]
-  console.log(imageName);
+  console.log(url);
   
-  res.send({url})
+  const x = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    body: "sss"
+  })
+  console.log(x);
+  
+  res.send({x})
   
 
 })
