@@ -2,6 +2,8 @@ import AWS from 'aws-sdk';
 import crypto from 'crypto';
 import { promisify } from 'util';
 import dotenv from 'dotenv'; 
+import fs from 'fs';
+
 
 
 dotenv.config();
@@ -11,17 +13,25 @@ const s3 = new AWS.S3({
     secretAccessKey: process.env.AWS_SECRET_KEY,
 });
 
-export async function generateUploadURL() {
-    const randomBytes = promisify(crypto.randomBytes);
-    const rawBytes = await randomBytes(16);
-    const imageName = rawBytes.toString('hex');
+
+
+export async function uploadFile(file:any){
+    const fileStream = fs.createReadStream(file.path);
 
     const params = ({
-        Bucket: "viaggio-locations",
-        Key: imageName,
-        Expires: 60
+        Bucket: process.env.AWS_BUCKET_NAME!,
+        Key: file.filename,
+        Body: fileStream
     })
+    return s3.upload(params).promise();
+}
 
-    const uploadURL = await s3.getSignedUrlPromise('putObject', params);
-    return uploadURL;
+
+
+export async function getFile(fileName: any) {
+    const params = {
+        Key: fileName,
+        Bucket: process.env.AWS_BUCKET_NAME!
+    }
+    return s3.getObject(params).createReadStream();
 }

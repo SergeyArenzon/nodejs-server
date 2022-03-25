@@ -1,18 +1,15 @@
 import express from "express";
-import bodyParser, { text } from "body-parser";
+import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import locationRoutes from "./routes/location";
 import indexRoutes from "./routes/index";
+import s3Routes from "./routes/s3";
 import passportInitialize from "./passportConfig";
 import passport from "passport";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import mongoose, { ConnectOptions } from "mongoose";
-import { generateUploadURL } from './s3';
-import fetch from "node-fetch";
-
-
 
 const app = express();
 app.use(express.json());
@@ -45,28 +42,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 passportInitialize(passport);
 
-
-app.get('/s3url', async(req, res) => {
-  const url = await generateUploadURL();
-  const imageName = url.split('?')[0]
-  console.log(url);
-  
-  const x = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    },
-    body: "sss"
-  })
-  console.log(x);
-  
-  res.send({x})
-  
-
-})
-
 app.use("/", indexRoutes);
 app.use("/location", locationRoutes);
+app.use("/s3", s3Routes);
+
 const PORT = process.env.PORT || 5000;
 const MONGODB_URL: string | undefined  = process.env.MONGODB_URL;
 
