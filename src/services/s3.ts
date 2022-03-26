@@ -15,7 +15,7 @@ const s3 = new AWS.S3({
 
 
 
-export async function uploadFile(file:any){
+export async function uploadFile(file: any){
     const fileStream = fs.createReadStream(file.path);
 
     const params = ({
@@ -27,8 +27,7 @@ export async function uploadFile(file:any){
 }
 
 
-
-export async function getFile(fileName: any) {
+export async function getFile(fileName: string) {
     const params = {
         Key: fileName,
         Bucket: process.env.AWS_BUCKET_NAME!
