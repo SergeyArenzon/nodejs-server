@@ -7,15 +7,18 @@ const unlinkFile = util.promisify(fs.unlink);
 
 
 export const postImage = async (req: Request, res: Response) => {
+    console.log(req.body.info);
+    
     if(!req.files){
         res.status(400).json({error: "Files not found"});
         return;
     }
-    
     try {
-        const files = req.files;    
+        const files = req.files as Express.Multer.File[];    
         const result = await uploadFiles(files);
-        // await unlinkFile(file.path);
+        for (const file of files) {
+            unlinkFile(file.path);
+        }
         res.status(200).json({message: 'File sucessfuly uploaded', s3: result});
     } catch (error) {
         res.status(200).json({error: error, message: "File uploading failed"});
