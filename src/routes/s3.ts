@@ -12,7 +12,7 @@ const fileFilter = (req: any, file: any, cb: any) => {
         return cb(new Error("file is not correct type"), false);
     }
 }
-const upload = multer({dest: 'uploads/', fileFilter, limits: {fileSize: 1000000, files: 3}}).array('image');
+const upload = multer({dest: 'uploads/', fileFilter, limits: {fileSize: 1000000, files: 3}}).array('images');
 
 const uploadHandle = (req:any,res:any, next:any) => {
     upload(req, res, (err) => {
