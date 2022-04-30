@@ -3,17 +3,17 @@ import Location from "../models/Location";
 import Comment from "../models/Comment";
 import { compare } from "bcrypt";
 
-interface ILocation {
-    email: string,
+type ILocation = {
+    email?: string,
     // string: { type: Schema.Types.ObjectId, ref: "user" },
-    name: String,
-    location: string,
-    price: number,
-    description: string,
+    name?: String,
+    location?: string,
+    price?: number,
+    description?: string,
     // comments: [{ type: Schema.Types.ObjectId, ref: "comment" }],
-    coordinate: [number, number],
+    coordinate?: [number, number],
     // date: { type: Date, default: Date.now },
-    images: [],
+    images?: string[],
     // ratings: [
     //     {
     //     user: { type: Schema.Types.ObjectId, ref: "user" },
