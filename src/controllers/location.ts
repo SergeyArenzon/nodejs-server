@@ -7,6 +7,7 @@ import {
   deleteLocationById,
   updateLocationById,
   getCommentsByLocationId,
+  getFilteredLocations
 } from "../services/db";
 import { Request, Response } from "express";
 import util from 'util';
@@ -301,4 +302,19 @@ export const getImage = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(400).json({error, message: 'Couldnt get image'})
   }
+}
+export const getFilter = async (req: Request, res: Response) => {
+
+  if(!req.query.filter || !req.query.operator || !req.query.value){
+    res.status(400).json({error: 'Bad filter request'})
+    return;
+  }
+  const filterParams = {filter: req.query.filter.toString(), 
+    operator: req.query.operator.toString(), 
+    value: Number(req.query.value)};
+  
+  const location = await getFilteredLocations(filterParams);
+  res.status(200).json({location})
+  
+
 }

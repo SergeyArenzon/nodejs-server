@@ -50,11 +50,39 @@ export const verifyPassword = async (password: string, hashedPassword: string) =
 export const getAllLocations = async () => {
     const res = await Location.find().lean();
     var locations = res.map((location) => ({
+        ...location,
         id: location._id.toString(),
-        name: location.name,
-        price: location.price,
-        location: location.location,
-        description: location.description,
+     
+    }));
+    return locations;
+};
+
+//{ filter: 'price', operator: 'gt', value: 10 }
+
+export const getFilteredLocations = async (filterParams: {
+    filter: string, operator: string, value: number
+}) => {
+
+    const {filter, operator, value} = filterParams;
+    let query = {};
+    switch (filter) {
+        case 'price':
+            if(operator === 'gt'){
+                query = { price:{$gt: value} };
+            }
+            break;
+    
+        default:
+            break;
+    }
+
+
+    const res = await Location.find(query).lean();
+    
+    var locations = res.map((location) => ({
+        ...location,
+        id: location._id.toString(),
+        
     }));
     return locations;
 };

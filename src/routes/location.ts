@@ -13,7 +13,8 @@ import {
   createComment,
   getComment,
   postImage,
-  getImage
+  getImage,
+  getFilter
 } from "../controllers/location";
 
 const router = express.Router();
@@ -31,4 +32,5 @@ router.get("/:id/comment", getComment);
 router.post("/:id/image", getComment);
 router.post("/:id/upload/",uploadHandle, postImage);
 router.get("/:key/download", getImage);
+router.get("/:type/filter", getFilter);
 export default router;
