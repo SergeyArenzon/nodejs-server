@@ -24,6 +24,7 @@ const locationSchema = new Schema({
       rating: Number,
     },
   ],
+  avarageRating: Number
 });
 
 const Location =

@@ -77,6 +77,13 @@ export const getFilteredLocations = async (filterParams: {
             const regex = new RegExp(value, 'i')
             query = {name: {$regex: regex}};
             break;
+        case 'rating':
+            if(operator === 'gt'){
+                query = { avarageRating:{$gt: Number(value)} };
+            }else if(operator === 'lt'){
+                query = { avarageRating:{$lt: Number(value)} };
+            }
+            break;
     
         default:
             break;

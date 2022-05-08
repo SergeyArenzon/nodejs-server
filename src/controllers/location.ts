@@ -184,6 +184,15 @@ export const updateRating = async (req: Request, res: Response) => {
     if (!userAlreadtRated) {
       location.ratings.push({ user, rating });
     }
+
+    // calculate avarage ratings of location
+    if(location.ratings.length > 0){
+      let sumRating = 0;
+      for (const rating of location.ratings) {
+        sumRating += rating.rating;
+      }
+      location.avarageRating = sumRating / location.ratings.length ;
+    }
     await updateLocationById(locationId, location);
     res.status(200).json({
       message: "Successfully rating was added",
