@@ -60,7 +60,7 @@ export const getAllLocations = async () => {
 //{ filter: 'price', operator: 'gt', value: 10 }
 
 export const getFilteredLocations = async (filterParams: {
-    filter: string, operator: string, value: number
+    filter: string, operator: string | null, value: string
 }) => {
 
     const {filter, operator, value} = filterParams;
@@ -68,8 +68,14 @@ export const getFilteredLocations = async (filterParams: {
     switch (filter) {
         case 'price':
             if(operator === 'gt'){
-                query = { price:{$gt: value} };
+                query = { price:{$gt: Number(value)} };
+            }else if(operator === 'lt'){
+                query = { price:{$lt: Number(value)} };
             }
+            break;
+        case 'name':
+            const regex = new RegExp(value, 'i')
+            query = {name: {$regex: regex}};
             break;
     
         default:

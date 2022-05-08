@@ -311,8 +311,9 @@ export const getFilter = async (req: Request, res: Response) => {
   }
   const filterParams = {filter: req.query.filter.toString(), 
     operator: req.query.operator.toString(), 
-    value: Number(req.query.value)};
+    value: req.query.value.toString()};
   
+    
   const location = await getFilteredLocations(filterParams);
   res.status(200).json({location})
   
