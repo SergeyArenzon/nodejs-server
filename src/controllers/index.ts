@@ -66,9 +66,11 @@ export const postLogin = async (req: Request, res: Response, next:NextFunction) 
 };
 
 export const getUser = async (req: Request, res: Response) => {
+  
   const { user }  = req;
+  
   try {
-    res.status(200).json(user);
+    res.status(200).json(user || null);
   } catch (err) {
     res.status(401).json({ error: err, message: "Unauthorized user"  });
   }
