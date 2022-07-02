@@ -59,7 +59,7 @@ export const postLogin = async (req: Request, res: Response, next:NextFunction) 
         if (err) throw err;
         res
           .status(200)
-          .json({ message: "Successfully Authenticated", user: user });
+          .json({ message: "Successfully Authenticated",  user });
       });
     }
   })(req, res, next);

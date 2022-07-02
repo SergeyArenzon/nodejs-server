@@ -14,17 +14,8 @@ const initialize = (passport: PassportStatic) => {
           if (!user) return done(null, false);
           bcrypt.compare(password, user.password, (err, result) => {
             if (err) throw err;
-            if (result === true) {
-        
-              const fixedUser = {
-                id: user._id.toString(),
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
-              };
-              
-              
-              return done(null, fixedUser);
+            if (result === true) { 
+              return done(null, user);
             } else {
               return done(null, false);
             }
