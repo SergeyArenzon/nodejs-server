@@ -59,16 +59,18 @@ export const postLogin = async (req: Request, res: Response, next:NextFunction) 
         if (err) throw err;
         res
           .status(200)
-          .json({ message: "Successfully Authenticated", user: user });
+          .json({ message: "Successfully Authenticated",  user });
       });
     }
   })(req, res, next);
 };
 
 export const getUser = async (req: Request, res: Response) => {
+  
   const { user }  = req;
+  
   try {
-    res.status(200).json(user);
+    res.status(200).json(user || null);
   } catch (err) {
     res.status(401).json({ error: err, message: "Unauthorized user"  });
   }
