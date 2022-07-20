@@ -12,7 +12,6 @@ import {
 import { Request, Response } from "express";
 import util from 'util';
 import fs from 'fs';
-import { uploadFiles, getFile } from '../services/s3';
 const unlinkFile = util.promisify(fs.unlink);
 
 
@@ -271,47 +270,6 @@ export const getComment = async (req: Request, res: Response) => {
   }
 };
 
-
-
-
-
-export const postImage = async (req: Request, res: Response) => {
-  const locationId = req.params.id;  
-  if(!locationId) return res.status(400).json({message: "No location id"});
-
-  if(!req.files){
-      res.status(400).json({error: "Files not found"});
-      return;
-  }
-
-  try {
-      const files = req.files as Express.Multer.File[];    
-      const result:any = await uploadFiles(files);
-      const imagesUrl:string[] = [];
-
-      for (const image of result) {
-        imagesUrl.push(image.key);
-      }
-      await updateLocationById(locationId, {images: imagesUrl});
-      
-      for (const file of files) {
-          unlinkFile(file.path);
-      }
-      res.status(200).json({message: 'File sucessfuly uploaded', s3: result});
-  } catch (error) {
-      res.status(400).json({error: error, message: "File uploading failed"});
-  }
-}
-
-export const getImage = async (req: Request, res: Response) => {
-  const key = req.params.key;
-  try {
-    const readStream = await getFile(key);
-    (await readStream).pipe(res);
-  } catch (error) {
-    res.status(400).json({error, message: 'Couldnt get image'})
-  }
-}
 export const getFilter = async (req: Request, res: Response) => {
 
   if(!req.query.filter || !req.query.operator || !req.query.value){

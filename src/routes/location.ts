@@ -1,7 +1,5 @@
 import express from "express";
 import { checkAuthenticated } from "../middlewares/auth";
-import { uploadHandle } from '../middlewares/file'
-
 
 import {
   getLocations,
@@ -12,8 +10,6 @@ import {
   updateRating,
   createComment,
   getComment,
-  postImage,
-  getImage,
   getFilter
 } from "../controllers/location";
 
@@ -30,7 +26,5 @@ router.put("/:id/rating", updateRating);
 router.post("/:id/comment", createComment);
 router.get("/:id/comment", getComment);
 router.post("/:id/image", getComment);
-router.post("/:id/upload/",uploadHandle, postImage);
-router.get("/:key/download", getImage);
 router.get("/:type/filter", getFilter);
 export default router;
