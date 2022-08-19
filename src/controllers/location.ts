@@ -83,6 +83,8 @@ export const getLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const location = await getLocationById(id);
+    console.log("----------------");
+
     res.status(200).json({
       message: "Successfully location by id fatched",
       location: location,
@@ -95,13 +97,8 @@ export const getLocation = async (req: Request, res: Response) => {
 export const deleteLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { user } = req;
-  console.log("=============================");
   const location = await getLocationById(id);
-  console.log(location);
-  
-  console.log("======================111=======");
 
-  
   if(!user) {
     res.status(401).json({ message: "Unauthorized user" });
     return;
@@ -304,6 +301,7 @@ export const postImage = async (req: Request, res: Response) => {
 }
 
 export const getImage = async (req: Request, res: Response) => {
+  console.log("----getimage--");
   const key = req.params.key;
   try {
     const readStream = await getFile(key);
