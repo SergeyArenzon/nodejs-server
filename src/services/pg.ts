@@ -3,9 +3,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-
-
-
 const pool = new Pool({
     connectionString: process.env.POSTGRES_DB_URL,
         ssl: {
@@ -14,17 +11,16 @@ const pool = new Pool({
   }); 
   
   
-export const createLocation = async(location:any) => {
+export const createLocation = async(location: {name: string, price: number, locationName: string, description: string}) => {
     const {name, price, locationName, description} = location;
+    const client = await pool.connect();
+    const query = `INSERT INTO location (name,price,location,description) VALUES ('${name}', ${price}, '${locationName}', '${description}')`
     try {
-        const client = await pool.connect();
-        const query = `INSERT INTO location (name,price,location,description) VALUES ('${name}', ${price}, '${locationName}', '${description}')`
-        console.log("-2-", query)
         const result = await client.query(query)
         client.release();
         return result
     } catch (error) {
-        console.log("-3-", error)
+        client.release();
         return error
     }
 }
