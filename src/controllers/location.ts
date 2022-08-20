@@ -1,5 +1,6 @@
 import Location from "../models/Location";
 import Comment from "../models/Comment";
+import {createLocation} from '../services/pg';
 import {
   getAllLocations,
   findUserById,
@@ -28,7 +29,7 @@ export const getLocations = async (req: Request, res: Response) => {
   }
 };
 
-export const createLocation = async (req: Request, res: Response) => {
+export const postLocation = async (req: Request, res: Response) => {
 
   const { name, price, location, description, images, coordinate } = req.body;
   const { user } = req;
@@ -50,33 +51,37 @@ export const createLocation = async (req: Request, res: Response) => {
   //   res.status(400).json({ message: "Error! Wrong input!" });
   // }
 
-  const author = await findUserById(user.id );
+  // const author = await findUserById(user.id );
  
+    const response = await createLocation({name,price,locationName: location,description})
+    console.log("-1-", response);
+    
+    res.json(response)
 
-  const locationModel = new Location({
-    author: author.id,
-    name,
-    email: user.email, 
-    price,
-    location,
-    description,
-    images,
-    coordinate,
-  });
+  // const locationModel = new Location({
+  //   author: author.id,
+  //   name,
+  //   email: user.email, 
+  //   price,
+  //   location,
+  //   description,
+  //   images,
+  //   coordinate,
+  // });
 
-  try {
-    const response = await locationModel.save();
-    res.status(201).json({
-      message: "Successfully location added.",
-      response,
-    });
-  } catch (error) {
-    res.status(501).json({
-      message: "Failed adding location",
-      error,
-    });
-  }
-  await locationModel.save();
+  // try {
+  //   const response = await locationModel.save();
+  //   res.status(201).json({
+  //     message: "Successfully location added.",
+  //     response,
+  //   });
+  // } catch (error) {
+  //   res.status(501).json({
+  //     message: "Failed adding location",
+  //     error,
+  //   });
+  // }
+  // await locationModel.save();
 };
 
 export const getLocation = async (req: Request, res: Response) => {
