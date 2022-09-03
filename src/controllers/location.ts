@@ -52,11 +52,17 @@ export const postLocation = async (req: Request, res: Response) => {
   // }
 
   // const author = await findUserById(user.id );
- 
-    const response = await createLocation({name,price,locationName: location,description})
-    console.log("-1-", response);
+  try {
     
-    res.json(response)
+    const response = await createLocation({name,price,locationName: location,description})
+    console.log(response);
+
+    
+    res.status(201).json(response);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+  
 
   // const locationModel = new Location({
   //   author: author.id,

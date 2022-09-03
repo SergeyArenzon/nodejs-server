@@ -14,13 +14,14 @@ const pool = new Pool({
 export const createLocation = async(location: {name: string, price: number, locationName: string, description: string}) => {
     const {name, price, locationName, description} = location;
     const client = await pool.connect();
-    const query = `INSERT INTO location (name,price,location,description) VALUES ('${name}', ${price}, '${locationName}', '${description}')`
+    const query = `INSERT INTO location (name,price,location,description) 
+                    VALUES ('${name}', ${price}, '${locationName}', '${description}')`
     try {
         const result = await client.query(query)
         client.release();
         return result
     } catch (error) {
         client.release();
-        return error
+        throw(error)
     }
 }
