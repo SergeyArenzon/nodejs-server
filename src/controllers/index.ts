@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import User from "../models/User";
 import passport from "passport";
 import { NextFunction, Request, Response } from "express";
 import { createUser } from '../services/pg';

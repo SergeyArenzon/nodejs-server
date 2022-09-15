@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+
 const pool = new Pool({
     connectionString: process.env.POSTGRES_DB_URL,
         ssl: {
@@ -11,11 +12,11 @@ const pool = new Pool({
   }); 
   
   
-export const createLocation = async(location: {name: string, price: number, locationName: string, description: string}) => {
-    const {name, price, locationName, description} = location;
+export const createLocation = async(location: {name: string, price: number, locationName: string, description: string, userId: string}) => {
+    const {name, price, locationName, description, userId} = location;
     const client = await pool.connect();
     const query = `INSERT INTO location (name,user_id,price,location,description) 
-                    VALUES ('${name}', ${1}, ${price}, '${locationName}', '${description}')`
+                    VALUES ('${name}', ${userId}, ${price}, '${locationName}', '${description}')`
     try {
         const result = await client.query(query)
         client.release();
@@ -25,7 +26,6 @@ export const createLocation = async(location: {name: string, price: number, loca
         throw(error)
     }
 }
-
 
 export const createUser = async(user: {email: string, firstName: string, lastName: string, hashedPassword: string }) => {
   const client = await pool.connect();
@@ -76,3 +76,15 @@ export const getUserById = async(id: string) => {
 }
 
 
+export const getAllLocations = async() => {
+  const client = await pool.connect();
+  const selectAllLocationQuery = `SELECT * FROM location`;
+  try{
+    const locations = (await client.query(selectAllLocationQuery)).rows
+    client.release();
+    return locations
+  } catch (error) {
+    client.release();
+    throw(error)
+  }
+}

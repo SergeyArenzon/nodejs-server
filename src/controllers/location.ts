@@ -1,8 +1,8 @@
 import Location from "../models/Location";
 import Comment from "../models/Comment";
-import {createLocation} from '../services/pg';
+import { createLocation, getAllLocations } from '../services/pg';
 import {
-  getAllLocations,
+  // getAllLocations,
   findUserById,
   getLocationById,
   deleteLocationById,
@@ -38,20 +38,14 @@ export const postLocation = async (req: Request, res: Response) => {
     res.status(401).json({ message: "Unauthorized user" });
     return
   }
-
   try {
-    
-    const response = await createLocation({name,price,locationName: location,description})
+    const response = await createLocation({name,price,locationName: location,description, userId: user.id})
     console.log(response);
-
-    
     res.status(201).json(response);
   } catch (error) {
     console.log(error);
-    
     res.status(400).json(error);
   }
-  
 };
 
 export const getLocation = async (req: Request, res: Response) => {
