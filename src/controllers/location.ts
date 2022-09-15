@@ -39,19 +39,6 @@ export const postLocation = async (req: Request, res: Response) => {
     return
   }
 
-  // check for input validity
-  // const isValid = await locationSchema.isValid({
-  //   name,
-  //   price,
-  //   location,
-  //   description,
-  // });
-
-  // if (!isValid) {
-  //   res.status(400).json({ message: "Error! Wrong input!" });
-  // }
-
-  // const author = await findUserById(user.id );
   try {
     
     const response = await createLocation({name,price,locationName: location,description})
@@ -60,42 +47,17 @@ export const postLocation = async (req: Request, res: Response) => {
     
     res.status(201).json(response);
   } catch (error) {
+    console.log(error);
+    
     res.status(400).json(error);
   }
   
-
-  // const locationModel = new Location({
-  //   author: author.id,
-  //   name,
-  //   email: user.email, 
-  //   price,
-  //   location,
-  //   description,
-  //   images,
-  //   coordinate,
-  // });
-
-  // try {
-  //   const response = await locationModel.save();
-  //   res.status(201).json({
-  //     message: "Successfully location added.",
-  //     response,
-  //   });
-  // } catch (error) {
-  //   res.status(501).json({
-  //     message: "Failed adding location",
-  //     error,
-  //   });
-  // }
-  // await locationModel.save();
 };
 
 export const getLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const location = await getLocationById(id);
-    console.log("----------------");
-
     res.status(200).json({
       message: "Successfully location by id fatched",
       location: location,

@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import User from "../models/User";
 import passport from "passport";
 import { NextFunction, Request, Response } from "express";
+import { createUser } from '../services/pg';
 
 
 
@@ -28,28 +29,16 @@ export const getLogout = (req: Request, res: Response) => {
   }
 };
 
+
+//  REGISTER
 export const postRegister = async (req: Request, res: Response) => {
   const { email, password, firstName, lastName } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = new User({
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-    });
-
-    const response = await user.save();
-    res.status(201).json({
-      message: "Successfully user added.",
-      response,
-    });
+    const response = await createUser({email, firstName, lastName, hashedPassword});
+    res.status(201).json({message: "Successfully user added."});
   } catch (error) {
-    res.status(501).json({
-      message: "Failed adding user",
-      error,
-    });
+    res.status(501).json({error});
   }
 };
 
