@@ -88,3 +88,27 @@ export const getAllLocations = async() => {
     throw(error)
   }
 }
+export const getLocationById = async(id: string) => {
+  const client = await pool.connect();
+  const selectLocationByIdQuery = `SELECT * FROM location WHERE ID = '${id}' `;
+  try{
+    const location = (await client.query(selectLocationByIdQuery)).rows[0]
+    client.release();
+    return location
+  } catch (error) {
+    client.release();
+    throw(error)
+  }
+}
+export const getCommentsByLocationId = async(location_id: string) => {
+  const client = await pool.connect();
+  const selectLocationByIdQuery = `SELECT * FROM comment WHERE LOCATION_ID = '${location_id}' `;
+  try{
+    const comments = (await client.query(selectLocationByIdQuery)).rows[0]
+    client.release();
+    return comments;
+  } catch (error) {
+    client.release();
+    throw(error)
+  }
+}
