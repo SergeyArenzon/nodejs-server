@@ -102,7 +102,12 @@ export const getLocationById = async(id: string) => {
 }
 export const getCommentsByLocationId = async(location_id: string) => {
   const client = await pool.connect();
-  const selectLocationByIdQuery = `SELECT * FROM comment WHERE LOCATION_ID = '${location_id}' `;
+  const selectLocationByIdQuery =   `
+  SELECT COMMENT.body,COMMENT.title, "user".firstname, "user".lastname 
+  FROM COMMENT
+  JOIN "user" on COMMENT.user_id = "user".id
+  WHERE COMMENT.location_id = ${location_id}
+  `;
   try{
     const comments = (await client.query(selectLocationByIdQuery)).rows
     client.release();
