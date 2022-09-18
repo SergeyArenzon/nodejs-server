@@ -1,6 +1,6 @@
 import Location from "../models/Location";
 import Comment from "../models/Comment";
-import { createLocation, getAllLocations, getLocationById, getCommentsByLocationId } from '../services/pg';
+import { createLocation, getAllLocations, getLocationById, getCommentsByLocationId, createCommentByUserId } from '../services/pg';
 import {
   // getAllLocations,
   findUserById,
@@ -183,29 +183,8 @@ export const createComment = async (req: Request, res: Response) => {
     res.status(401).json({ message: "Unauthorized user" });
     return;
   }
-  const author = await findUserById(user.id);
-  console.log(author);
-  
-
-  const location = await getLocationById(locationId);
-
-   //@ts-ignore
-  const comment = new Comment({
-    author: author._id,
-    title,
-    body,
-  });
-
-  
-
   try {
-//@ts-ignore
-    const response = await comment.save();
-
-    location.comments.push(comment);
-    location.save();
-
-
+    const response = await createCommentByUserId(user.id, locationId, body, title );
     res.status(201).json({
       message: "Successfully comment added.",
       response,

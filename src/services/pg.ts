@@ -104,6 +104,19 @@ export const getCommentsByLocationId = async(location_id: string) => {
   const client = await pool.connect();
   const selectLocationByIdQuery = `SELECT * FROM comment WHERE LOCATION_ID = '${location_id}' `;
   try{
+    const comments = (await client.query(selectLocationByIdQuery)).rows
+    client.release();
+    return comments;
+  } catch (error) {
+    client.release();
+    throw(error)
+  }
+}
+export const createCommentByUserId = async(userId: string, locationId: string, body: string, title: string) => {
+  const client = await pool.connect();
+  const selectLocationByIdQuery = `INSERT INTO comment(user_id, title, body, location_id)
+            VALUES('${userId}','${title}','${body}','${locationId}')`;
+  try{
     const comments = (await client.query(selectLocationByIdQuery)).rows[0]
     client.release();
     return comments;
