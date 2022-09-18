@@ -30,7 +30,7 @@ export const createLocation = async(location: {name: string, price: number, loca
 export const createUser = async(user: {email: string, firstName: string, lastName: string, hashedPassword: string }) => {
   const client = await pool.connect();
   const {email, firstName, lastName, hashedPassword} = user; 
-  const insertUserQuery = `INSERT INTO "user" (email,firstName,lastName,password) 
+  const insertUserQuery = `INSERT INTO "user" (email,first_name,last_name,password) 
                   VALUES ('${email}', '${firstName}', '${lastName}', '${hashedPassword}')`
 
   const selectUserByEmailQuery = `SELECT * FROM "user" WHERE EMAIL =  ('${email}')`
@@ -103,7 +103,7 @@ export const getLocationById = async(id: string) => {
 export const getCommentsByLocationId = async(location_id: string) => {
   const client = await pool.connect();
   const selectLocationByIdQuery =   `
-  SELECT COMMENT.body,COMMENT.title, "user".firstname, "user".lastname 
+  SELECT COMMENT.body,COMMENT.title, "user".first_name, "user".last_name 
   FROM COMMENT
   JOIN "user" on COMMENT.user_id = "user".id
   WHERE COMMENT.location_id = ${location_id}
