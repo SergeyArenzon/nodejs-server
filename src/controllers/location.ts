@@ -1,15 +1,15 @@
-import Location from "../models/Location";
-import Comment from "../models/Comment";
-import { createLocation, getAllLocations, getLocationById, getCommentsByLocationId, createCommentByUserId } from '../services/pg';
+import { createLocation, 
+  getAllLocations, 
+  getLocationById, 
+  getCommentsByLocationId, 
+  createCommentByUserId, 
+  updateLocationById } from '../services/pg';
 import {
-  // getAllLocations,
   findUserById,
-  // getLocationById,
   deleteLocationById,
-  updateLocationById,
-  // getCommentsByLocationId,
   getFilteredLocations
 } from "../services/db";
+
 import { Request, Response } from "express";
 import util from 'util';
 import fs from 'fs';

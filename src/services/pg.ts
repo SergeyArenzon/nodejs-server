@@ -120,7 +120,7 @@ export const getCommentsByLocationId = async(location_id: string) => {
 export const createCommentByUserId = async(userId: string, locationId: string, body: string, title: string) => {
   const client = await pool.connect();
   const selectLocationByIdQuery = `INSERT INTO comment(user_id, title, body, location_id)
-            VALUES('${userId}','${title}','${body}','${locationId}')`;
+                                    VALUES('${userId}','${title}','${body}','${locationId}')`;
   try{
     const comments = (await client.query(selectLocationByIdQuery)).rows[0]
     client.release();
@@ -129,4 +129,14 @@ export const createCommentByUserId = async(userId: string, locationId: string, b
     client.release();
     throw(error)
   }
+}
+
+export const updateLocationById = async(id, name, price, locationName, description) => {
+  const client = await pool.connect();
+  const updateLocationById = `UPDATE location 
+                              SET name=${name},
+                                  price=${price}, 
+                                  location=${locationName}, 
+                                  'description=${description})
+                              WHERE id=${id}`;
 }
