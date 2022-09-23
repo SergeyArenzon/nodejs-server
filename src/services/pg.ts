@@ -140,13 +140,11 @@ export const updateLocationById = async(id: number, name: string, price: number,
                                       description='${description}'
                                   WHERE id='${id}'`;
   try{
-    const response = (await client.query(updateLocationByIdQuery))
+    const response = await client.query(updateLocationByIdQuery)
     client.release();
     return response;
   } catch (error) {
     client.release();
-    console.log("drror", error, updateLocationByIdQuery);
-    
     throw(error)
   }
 }
