@@ -54,6 +54,7 @@ export const getAllLocations = async () => {
         id: location._id.toString(),
      
     }));
+    
     return locations;
 };
 

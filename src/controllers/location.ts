@@ -3,11 +3,12 @@ import { createLocation,
   getLocationById, 
   getCommentsByLocationId, 
   createCommentByUserId, 
-  updateLocationById
+  updateLocationById,
+  deleteLocationById
  } from '../services/pg';
 import {
   findUserById,
-  deleteLocationById,
+  // deleteLocationById,
   getFilteredLocations,
   // updateLocationById
 } from "../services/db";
@@ -73,16 +74,14 @@ export const deleteLocation = async (req: Request, res: Response) => {
     return;
   }  
 
-  console.log(user.id, location.author._id.toString() );
-  
 
-  if (user.id !== location.author._id.toString()) {
+  if (user.id !== location.user_id) {
     res.status(401).json({ message: "Wrong user trying to delete location" });
     return;
   }
 
   try {
-    const respone = await deleteLocationById(id);
+    const respone = await deleteLocationById(+id);
     res.status(200).json({
       message: "Successfully location Deleted by id",
       location: respone,
