@@ -122,7 +122,7 @@ export const createCommentByUserId = async(userId: string, locationId: string, b
   const selectLocationByIdQuery = `INSERT INTO comment(user_id, title, body, location_id)
                                     VALUES('${userId}','${title}','${body}','${locationId}')`;
   try{
-    const comments = (await client.query(selectLocationByIdQuery)).rows[0]
+    const comments = (await client.query(selectLocationByIdQuery)).rows[0];
     client.release();
     return comments;
   } catch (error) {
@@ -140,7 +140,20 @@ export const updateLocationById = async(id: number, name: string, price: number,
                                       description='${description}'
                                   WHERE id='${id}'`;
   try{
-    const response = await client.query(updateLocationByIdQuery)
+    const response = await client.query(updateLocationByIdQuery);
+    client.release();
+    return response;
+  } catch (error) {
+    client.release();
+    throw(error)
+  }
+}
+export const deleteLocationById = async(id: number) => {
+  const client = await pool.connect();
+  const deleteLocationByIdQuery = `DELETE FROM location
+                                    WHERE ID='${id}';`;
+  try{
+    const response = await client.query(deleteLocationByIdQuery);
     client.release();
     return response;
   } catch (error) {
