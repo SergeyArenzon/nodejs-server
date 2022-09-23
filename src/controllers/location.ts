@@ -3,11 +3,13 @@ import { createLocation,
   getLocationById, 
   getCommentsByLocationId, 
   createCommentByUserId, 
-  updateLocationById } from '../services/pg';
+  updateLocationById
+ } from '../services/pg';
 import {
   findUserById,
   deleteLocationById,
-  getFilteredLocations
+  getFilteredLocations,
+  // updateLocationById
 } from "../services/db";
 
 import { Request, Response } from "express";
@@ -94,7 +96,9 @@ export const editLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { user } = req;
 
-  const updatedData = req.body;
+  const {name, location: locationName, price, description } = req.body;
+
+  
 
 
   // Check for correct user trying to edit
@@ -105,13 +109,13 @@ export const editLocation = async (req: Request, res: Response) => {
 
   const location = await getLocationById(id);
   
-  if(user.id !== location.author.toString()){
+  if(user.id !== location.user_id){
     res.status(405).json({ message: "User not allowed for editing this location." });
     return;
   }
 
   try {
-    const response = await updateLocationById(id, updatedData);
+    const response = await updateLocationById(+id, name, +price, locationName, description);
     res.status(200).json({
       message: "Successfully location by id updated",
       location: response,
@@ -157,7 +161,7 @@ export const updateRating = async (req: Request, res: Response) => {
       }
       location.avarageRating = sumRating / location.ratings.length ;
     }
-    await updateLocationById(locationId, location);
+    // await updateLocationById(locationId, location);
     res.status(200).json({
       message: "Successfully rating was added",
       rating,
@@ -235,7 +239,7 @@ export const postImage = async (req: Request, res: Response) => {
       for (const image of result) {
         imagesUrl.push(image.key);
       }
-      await updateLocationById(locationId, {images: imagesUrl});
+      // await updateLocationById(locationId, {images: imagesUrl});
       
       for (const file of files) {
           unlinkFile(file.path);

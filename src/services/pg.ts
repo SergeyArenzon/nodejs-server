@@ -131,12 +131,22 @@ export const createCommentByUserId = async(userId: string, locationId: string, b
   }
 }
 
-export const updateLocationById = async(id, name, price, locationName, description) => {
+export const updateLocationById = async(id: number, name: string, price: number, locationName: string, description: string) => {
   const client = await pool.connect();
-  const updateLocationById = `UPDATE location 
-                              SET name=${name},
-                                  price=${price}, 
-                                  location=${locationName}, 
-                                  'description=${description})
-                              WHERE id=${id}`;
+  const updateLocationByIdQuery = `UPDATE location 
+                                  SET name='${name}',
+                                      price='${price}', 
+                                      location='${locationName}', 
+                                      description='${description}'
+                                  WHERE id='${id}'`;
+  try{
+    const response = (await client.query(updateLocationByIdQuery))
+    client.release();
+    return response;
+  } catch (error) {
+    client.release();
+    console.log("drror", error, updateLocationByIdQuery);
+    
+    throw(error)
+  }
 }
