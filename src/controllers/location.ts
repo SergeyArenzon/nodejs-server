@@ -1,14 +1,17 @@
-import Location from "../models/Location";
-import Comment from "../models/Comment";
+import { createLocation, 
+  getAllLocations, 
+  getLocationById, 
+  getCommentsByLocationId, 
+  createCommentByUserId, 
+  updateLocationById
+ } from '../services/pg';
 import {
-  getAllLocations,
   findUserById,
-  getLocationById,
   deleteLocationById,
-  updateLocationById,
-  getCommentsByLocationId,
-  getFilteredLocations
+  getFilteredLocations,
+  // updateLocationById
 } from "../services/db";
+
 import { Request, Response } from "express";
 import util from 'util';
 import fs from 'fs';
@@ -28,7 +31,7 @@ export const getLocations = async (req: Request, res: Response) => {
   }
 };
 
-export const createLocation = async (req: Request, res: Response) => {
+export const postLocation = async (req: Request, res: Response) => {
 
   const { name, price, location, description, images, coordinate } = req.body;
   const { user } = req;
@@ -37,46 +40,14 @@ export const createLocation = async (req: Request, res: Response) => {
     res.status(401).json({ message: "Unauthorized user" });
     return
   }
-
-  // check for input validity
-  // const isValid = await locationSchema.isValid({
-  //   name,
-  //   price,
-  //   location,
-  //   description,
-  // });
-
-  // if (!isValid) {
-  //   res.status(400).json({ message: "Error! Wrong input!" });
-  // }
-
-  const author = await findUserById(user.id );
- 
-
-  const locationModel = new Location({
-    author: author.id,
-    name,
-    email: user.email, 
-    price,
-    location,
-    description,
-    images,
-    coordinate,
-  });
-
   try {
-    const response = await locationModel.save();
-    res.status(201).json({
-      message: "Successfully location added.",
-      response,
-    });
+    const response = await createLocation({name,price,locationName: location,description, userId: user.id})
+    console.log(response);
+    res.status(201).json(response);
   } catch (error) {
-    res.status(501).json({
-      message: "Failed adding location",
-      error,
-    });
+    console.log(error);
+    res.status(400).json(error);
   }
-  await locationModel.save();
 };
 
 export const getLocation = async (req: Request, res: Response) => {
@@ -95,13 +66,8 @@ export const getLocation = async (req: Request, res: Response) => {
 export const deleteLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { user } = req;
-  console.log("=============================");
   const location = await getLocationById(id);
-  console.log(location);
-  
-  console.log("======================111=======");
 
-  
   if(!user) {
     res.status(401).json({ message: "Unauthorized user" });
     return;
@@ -130,7 +96,9 @@ export const editLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { user } = req;
 
-  const updatedData = req.body;
+  const {name, location: locationName, price, description } = req.body;
+
+  
 
 
   // Check for correct user trying to edit
@@ -141,13 +109,13 @@ export const editLocation = async (req: Request, res: Response) => {
 
   const location = await getLocationById(id);
   
-  if(user.id !== location.author.toString()){
+  if(user.id !== location.user_id){
     res.status(405).json({ message: "User not allowed for editing this location." });
     return;
   }
 
   try {
-    const response = await updateLocationById(id, updatedData);
+    const response = await updateLocationById(+id, name, +price, locationName, description);
     res.status(200).json({
       message: "Successfully location by id updated",
       location: response,
@@ -193,7 +161,7 @@ export const updateRating = async (req: Request, res: Response) => {
       }
       location.avarageRating = sumRating / location.ratings.length ;
     }
-    await updateLocationById(locationId, location);
+    // await updateLocationById(locationId, location);
     res.status(200).json({
       message: "Successfully rating was added",
       rating,
@@ -219,29 +187,8 @@ export const createComment = async (req: Request, res: Response) => {
     res.status(401).json({ message: "Unauthorized user" });
     return;
   }
-  const author = await findUserById(user.id);
-  console.log(author);
-  
-
-  const location = await getLocationById(locationId);
-
-   //@ts-ignore
-  const comment = new Comment({
-    author: author._id,
-    title,
-    body,
-  });
-
-  
-
   try {
-//@ts-ignore
-    const response = await comment.save();
-
-    location.comments.push(comment);
-    location.save();
-
-
+    const response = await createCommentByUserId(user.id, locationId, body, title );
     res.status(201).json({
       message: "Successfully comment added.",
       response,
@@ -292,7 +239,7 @@ export const postImage = async (req: Request, res: Response) => {
       for (const image of result) {
         imagesUrl.push(image.key);
       }
-      await updateLocationById(locationId, {images: imagesUrl});
+      // await updateLocationById(locationId, {images: imagesUrl});
       
       for (const file of files) {
           unlinkFile(file.path);
@@ -304,6 +251,7 @@ export const postImage = async (req: Request, res: Response) => {
 }
 
 export const getImage = async (req: Request, res: Response) => {
+  console.log("----getimage--");
   const key = req.params.key;
   try {
     const readStream = await getFile(key);

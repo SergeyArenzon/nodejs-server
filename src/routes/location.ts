@@ -5,7 +5,7 @@ import { uploadHandle } from '../middlewares/file'
 
 import {
   getLocations,
-  createLocation,
+  postLocation,
   getLocation,
   deleteLocation,
   editLocation,
@@ -22,7 +22,7 @@ const router = express.Router();
 /* ROUTE:  /location  */
 
 router.get("/", getLocations);
-router.post("/", checkAuthenticated, createLocation);
+router.post("/", checkAuthenticated, postLocation);
 router.get("/:id", getLocation);
 router.delete("/:id", deleteLocation);
 router.put("/:id/edit", editLocation);
