@@ -165,10 +165,10 @@ export const deleteLocationById = async(id: number) => {
 export const createRating = async(locationId: number, userId: number, rating: number) => {
 
   const client = await pool.connect();
-  const update = `INSERT INTO rating(user_id, location_id, vaalue)
+  const createRatingQuery = `INSERT INTO rating(user_id, location_id, vaalue)
                   VALUES('${userId}', '${locationId}','${rating}');`;
   try{
-    const response = await client.query(update);
+    const response = await client.query(createRatingQuery);
     client.release();
     return response;
   } catch (error: any) {
@@ -179,11 +179,11 @@ export const createRating = async(locationId: number, userId: number, rating: nu
 export const updateRating = async(locationId: number, userId: number, rating: number) => {
 
   const client = await pool.connect();
-  const update = `UPDATE rating 
+  const updateRatingQuery = `UPDATE rating 
                   SET value='${rating}'
                   WHERE user_id='${userId}' AND location_id='${locationId}'`;
   try{
-    const response:any = await client.query(update);
+    const response:any = await client.query(updateRatingQuery);
     client.release();
     return response.message;
   } catch (error: any) {
