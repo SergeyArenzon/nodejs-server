@@ -5,7 +5,8 @@ import { createLocation,
   createCommentByUserId, 
   updateLocationById,
   deleteLocationById,
-  createRating
+  createRating,
+  updateRating
  } from '../services/pg';
 import {
   findUserById,
@@ -126,7 +127,7 @@ export const editLocation = async (req: Request, res: Response) => {
   }
 };
 
-export const updateRating = async (req: Request, res: Response) => {
+export const putRating = async (req: Request, res: Response) => {
   
   if(!req.user){
     res.status(401).json({ message: "Unauthorized user" });
@@ -140,7 +141,10 @@ export const updateRating = async (req: Request, res: Response) => {
   
 
   try {
-    const response = await createRating(locationId, userId, rating);
+    const response = await updateRating(locationId, userId, rating);
+console.log(response);
+
+    
   
     // if (!userAlreadtRated) {
     //   location.ratings.push({ user, rating });

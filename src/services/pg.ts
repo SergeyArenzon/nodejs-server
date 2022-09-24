@@ -176,21 +176,18 @@ export const createRating = async(locationId: number, userId: number, rating: nu
     throw(error.message)
   }
 }
-// export const updateRating = async(locationId: number, userId: number, rating: number) => {
+export const updateRating = async(locationId: number, userId: number, rating: number) => {
 
-//   const client = await pool.connect();
-//   const update = `UPDATE rating 
-//                   SET name='${name}',
-//                       price='${price}', 
-//                       location='${locationName}', 
-//                       description='${description}'
-//                   WHERE id='${id}'`;
-//   try{
-//     const response = await client.query(update);
-//     client.release();
-//     return response;
-//   } catch (error: any) {
-//     client.release();
-//     throw(error.message)
-//   }
-// }
+  const client = await pool.connect();
+  const update = `UPDATE rating 
+                  SET value='${rating}'
+                  WHERE user_id='${userId}' AND location_id='${locationId}'`;
+  try{
+    const response:any = await client.query(update);
+    client.release();
+    return response.message;
+  } catch (error: any) {
+    client.release();
+    throw(error.message)
+  }
+}
