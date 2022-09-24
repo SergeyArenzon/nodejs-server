@@ -9,7 +9,7 @@ import {
   getLocation,
   deleteLocation,
   editLocation,
-  updateRating,
+  putRating,
   createComment,
   getComment,
   postImage,
@@ -26,7 +26,7 @@ router.post("/", checkAuthenticated, postLocation);
 router.get("/:id", getLocation);
 router.delete("/:id", deleteLocation);
 router.put("/:id/edit", editLocation);
-router.put("/:id/rating", updateRating);
+router.put("/:id/rating", putRating);
 router.post("/:id/comment", createComment);
 router.get("/:id/comment", getComment);
 router.post("/:id/image", getComment);
