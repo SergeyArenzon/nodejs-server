@@ -4,7 +4,8 @@ import { createLocation,
   getCommentsByLocationId, 
   createCommentByUserId, 
   updateLocationById,
-  deleteLocationById
+  deleteLocationById,
+  createRating
  } from '../services/pg';
 import {
   findUserById,
@@ -31,6 +32,7 @@ export const getLocations = async (req: Request, res: Response) => {
     });
   }
 };
+
 
 export const postLocation = async (req: Request, res: Response) => {
 
@@ -131,46 +133,37 @@ export const updateRating = async (req: Request, res: Response) => {
     return;
   }
 
-  const userId = req.user.id;
-  const rating: [] = req.body.rating;
-  const locationId = req.params.id;
-  const location = await getLocationById(locationId);
+  const userId: number = Number(req.user.id);
+  const rating: number = Number(req.body.rating);
+  const locationId: number = Number(req.params.id);
+
   
-  const user = await findUserById(userId);
 
-  let userAlreadtRated = false;
   try {
-
-    location.ratings.forEach((existRating: any, index: number) => {
-      if (existRating.user._id.equals(user._id)) {
-        location.ratings[index].rating = rating;
-        userAlreadtRated = true;
-      }
-    });
-
-    if (!userAlreadtRated) {
-      location.ratings.push({ user, rating });
-    }
+    const response = await createRating(locationId, userId, rating);
+  
+    // if (!userAlreadtRated) {
+    //   location.ratings.push({ user, rating });
+    // }
 
     // calculate avarage ratings of location
-    if(location.ratings.length > 0){
-      let sumRating = 0;
-      for (const rating of location.ratings) {
-        sumRating += rating.rating;
-      }
-      location.avarageRating = sumRating / location.ratings.length ;
-    }
+    // if(location.ratings.length > 0){
+    //   let sumRating = 0;
+    //   for (const rating of location.ratings) {
+    //     sumRating += rating.rating;
+    //   }
+    //   location.avarageRating = sumRating / location.ratings.length ;
+    // }
     // await updateLocationById(locationId, location);
     res.status(200).json({
       message: "Successfully rating was added",
       rating,
-      location,
+      response
     });
   } catch (error) {
     res.status(500).json({
       message: "Failed adding rating",
       rating,
-      location,
       error
     });
   }
