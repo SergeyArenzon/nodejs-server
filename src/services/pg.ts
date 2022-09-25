@@ -163,9 +163,8 @@ export const deleteLocationById = async(id: number) => {
 }
 
 export const createRating = async(locationId: number, userId: number, rating: number) => {
-
   const client = await pool.connect();
-  const createRatingQuery = `INSERT INTO rating(user_id, location_id, vaalue)
+  const createRatingQuery = `INSERT INTO rating(user_id, location_id, value)
                   VALUES('${userId}', '${locationId}','${rating}');`;
   try{
     const response = await client.query(createRatingQuery);
@@ -177,7 +176,6 @@ export const createRating = async(locationId: number, userId: number, rating: nu
   }
 }
 export const updateRating = async(locationId: number, userId: number, rating: number) => {
-
   const client = await pool.connect();
   const updateRatingQuery = `UPDATE rating 
                   SET value='${rating}'
@@ -185,7 +183,7 @@ export const updateRating = async(locationId: number, userId: number, rating: nu
   try{
     const response:any = await client.query(updateRatingQuery);
     client.release();
-    return response.message;
+    return response;
   } catch (error: any) {
     client.release();
     throw(error.message)
