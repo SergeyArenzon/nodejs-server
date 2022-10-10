@@ -57,7 +57,7 @@ export const postLocation = async (req: Request, res: Response) => {
 export const getLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const location = await getLocationById(id);
+    const location = await getLocationById(+id);
     res.status(200).json({
       message: "Successfully location by id fatched",
       location: location,
@@ -70,7 +70,7 @@ export const getLocation = async (req: Request, res: Response) => {
 export const deleteLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { user } = req;
-  const location = await getLocationById(id);
+  const location = await getLocationById(+id);
 
   if(!user) {
     res.status(401).json({ message: "Unauthorized user" });
@@ -109,7 +109,7 @@ export const editLocation = async (req: Request, res: Response) => {
     return; 
   }
 
-  const location = await getLocationById(id);
+  const location = await getLocationById(+id);
   
   if(user.id !== location.user_id){
     res.status(405).json({ message: "User not allowed for editing this location." });
@@ -141,24 +141,10 @@ export const putRating = async (req: Request, res: Response) => {
   
 
   try {
-    const response = await updateRating(locationId, userId, rating);
-console.log(response);
-
-    
-  
-    // if (!userAlreadtRated) {
-    //   location.ratings.push({ user, rating });
-    // }
-
-    // calculate avarage ratings of location
-    // if(location.ratings.length > 0){
-    //   let sumRating = 0;
-    //   for (const rating of location.ratings) {
-    //     sumRating += rating.rating;
-    //   }
-    //   location.avarageRating = sumRating / location.ratings.length ;
-    // }
-    // await updateLocationById(locationId, location);
+    const location = await getLocationById(locationId);
+    if(!location) return  res.status(404).json({message: `Location id=${locationId} not found!`});
+    let response = await updateRating(locationId, userId, rating);
+    if(response.rowCount === 0) response = await createRating(locationId, userId, rating, location);
     res.status(200).json({
       message: "Successfully rating was added",
       rating,

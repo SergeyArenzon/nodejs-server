@@ -88,7 +88,7 @@ export const getAllLocations = async() => {
     throw(error)
   }
 }
-export const getLocationById = async(id: string) => {
+export const getLocationById = async(id: number) => {
   const client = await pool.connect();
   const selectLocationByIdQuery = `SELECT * FROM location WHERE ID = '${id}' `;
   try{
@@ -162,13 +162,20 @@ export const deleteLocationById = async(id: number) => {
   }
 }
 
-export const createRating = async(locationId: number, userId: number, rating: number) => {
-
+export const createRating = async(locationId: number, userId: number, rating: number, location: any) => {
   const client = await pool.connect();
-  const createRatingQuery = `INSERT INTO rating(user_id, location_id, vaalue)
+  const createRatingQuery = `INSERT INTO rating(user_id, location_id, value)
                   VALUES('${userId}', '${locationId}','${rating}');`;
+
+  const newRatingCount = location.rating_count + 1;
+  const newRatingSum = location.rating_sum + rating;
+  const updateLocationRatingQuery = `UPDATE location
+                                     SET rating_sum = '${newRatingSum}',
+                                         rating_count = '${newRatingCount}'
+                                    WHERE ID=${locationId}`;
   try{
     const response = await client.query(createRatingQuery);
+    await client.query(updateLocationRatingQuery);
     client.release();
     return response;
   } catch (error: any) {
@@ -177,15 +184,29 @@ export const createRating = async(locationId: number, userId: number, rating: nu
   }
 }
 export const updateRating = async(locationId: number, userId: number, rating: number) => {
-
   const client = await pool.connect();
+  const getRatingQuery = `SELECT * FROM rating
+                          WHERE user_id='${userId}' AND location_id='${locationId}'`
+  const getLocationQuery = `SELECT * FROM location
+                          WHERE id='${locationId}'`
+  const oldRating = (await client.query(getRatingQuery)).rows[0];
   const updateRatingQuery = `UPDATE rating 
                   SET value='${rating}'
                   WHERE user_id='${userId}' AND location_id='${locationId}'`;
+
   try{
+   
     const response:any = await client.query(updateRatingQuery);
+    if(response.rowCount > 0) {
+      const location = (await client.query(getLocationQuery)).rows[0];
+      const newLocationRatingSum: number = location.rating_sum +  rating - oldRating.value;
+      const updateLocationQuery = `UPDATE location 
+                                  SET rating_sum='${newLocationRatingSum}'
+                                  WHERE id='${locationId}'`; 
+      await client.query(updateLocationQuery);
+    }
     client.release();
-    return response.message;
+    return response;
   } catch (error: any) {
     client.release();
     throw(error.message)
