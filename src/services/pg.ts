@@ -88,7 +88,7 @@ export const getAllLocations = async() => {
     throw(error)
   }
 }
-export const getLocationById = async(id: string) => {
+export const getLocationById = async(id: number) => {
   const client = await pool.connect();
   const selectLocationByIdQuery = `SELECT * FROM location WHERE ID = '${id}' `;
   try{
@@ -166,6 +166,9 @@ export const createRating = async(locationId: number, userId: number, rating: nu
   const client = await pool.connect();
   const createRatingQuery = `INSERT INTO rating(user_id, location_id, value)
                   VALUES('${userId}', '${locationId}','${rating}');`;
+  // const updateLocationRatingQuery = `UPDATE location
+                                      
+  //                 WHERE ID=${locationId}`;
   try{
     const response = await client.query(createRatingQuery);
     client.release();
