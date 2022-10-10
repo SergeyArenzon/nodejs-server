@@ -141,12 +141,10 @@ export const putRating = async (req: Request, res: Response) => {
   
 
   try {
-    const location = await getLocationById(locationId + 3);
+    const location = await getLocationById(locationId);
     if(!location) return  res.status(404).json({message: `Location id=${locationId} not found!`});
-
-    return
     let response = await updateRating(locationId, userId, rating);
-    if(response.rowCount === 0) response = await createRating(locationId, userId, rating);
+    if(response.rowCount === 0) response = await createRating(locationId, userId, rating, location);
     res.status(200).json({
       message: "Successfully rating was added",
       rating,
